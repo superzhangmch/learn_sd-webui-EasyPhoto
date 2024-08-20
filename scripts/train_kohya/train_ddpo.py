@@ -542,7 +542,7 @@ def main():
 
     # initialize stat tracker
     if args.per_prompt_stat_tracking:
-        stat_tracker = PerPromptStatTracker(
+        stat_tracker = PerPromptStatTracker( # PerPromptStatTracker: Track the mean and std of reward on a per-prompt basis and use that to compute advantages
             args.per_prompt_stat_tracking_buffer_size,
             args.per_prompt_stat_tracking_min_count,
         )
@@ -695,9 +695,10 @@ def main():
             # gather the prompts across processes
             prompt_ids = accelerator.gather(samples["prompt_ids"]).cpu().numpy()
             prompts = pipeline.tokenizer.batch_decode(prompt_ids, skip_special_tokens=True)
-            advantages = stat_tracker.update(prompts, rewards)
+            advantages = stat_tracker.update(prompts, rewards) # stat_tracker: Track the mean and std of reward on a per-prompt basis and use that to compute advantages
         else:
             advantages = (rewards - rewards.mean()) / (rewards.std() + 1e-8)
+        # 上面在算RL的优势函数。按A=Q(s, a) - v(s), Q即rewards, 而V需要训一个值函数model来估计。这里是用对reward的归一化当做优势函数
 
         # ungather advantages; we only need to keep the entries corresponding to the samples on this process
         samples["advantages"] = (
