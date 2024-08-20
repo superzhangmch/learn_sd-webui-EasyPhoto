@@ -1,3 +1,4 @@
+# ==== 用强化学习训练的代码在：scripts/train_kohya/train_ddpo.py
 # 📷 EasyPhoto | Your Smart AI Photo Generator.
 🦜 EasyPhoto is a Webui UI plugin for generating AI portraits that can be used to train digital doppelgangers relevant to you.
 
